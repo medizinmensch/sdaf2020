@@ -34,5 +34,3 @@ commits of the original repository.
 ![watch home repository](./.github/img/watch_repo.png)
 
 Do not submit lengthy pull request. Pull requests with a large `diff` in
-`Files changed` tab are difficult to review. If you want to get good feedback on
-your pull requests, don't push unrelated changes.
