@@ -24,10 +24,12 @@ export default {
     addEntry(newEntry) {
       let maxIdb = Math.max(...this.entries.map(entry => entry.index)) + 1;
       this.entries.push({ index: maxIdb, votes: 0, title: newEntry });
+      this.sort();
     },
     upvoteEntry(entry){
       console.log(entry)
       this.entries.find(element => element.index == entry.index).votes ++;
+      this.sort();
     },
     downvoteEntry(entry){
       console.log(entry)
