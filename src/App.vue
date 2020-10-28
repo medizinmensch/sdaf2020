@@ -52,6 +52,11 @@ export default {
           index: 1,
           votes: 0,
           title: 'JavaScript ES9 announced'
+        },
+        {
+          index: 2,
+          votes: 3,
+          title: 'Microsft announces bankruptcy'
         }
       ]
     }

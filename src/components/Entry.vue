@@ -2,7 +2,7 @@
   <div class="entry">
     <p>{{ entry.votes }}🚀 {{ entry.title }}</p>
 
-    <button @click="$emit('upvote-entry', entry)">🔼</button>
+    <button class="upvotebtn" @click="$emit('upvote-entry', entry)">🔼</button>
     <button @click="$emit('downvote-entry', entry)">🔽</button>
     <button @click="$emit('del-entry', entry)">🗑</button>
   </div>
