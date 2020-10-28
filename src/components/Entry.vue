@@ -10,10 +10,10 @@
 
 <script>
 export default {
-  name: "Entry",
-  props: ["entry"],
-  methods: {},
-};
+  name: 'Entry',
+  props: ['entry'],
+  methods: {}
+}
 </script>
 
 <style scoped>

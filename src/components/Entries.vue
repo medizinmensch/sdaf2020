@@ -18,30 +18,28 @@
 </template>
 
 <script>
-import Entry from "./Entry";
+import Entry from './Entry'
 
 export default {
-  name: "Entries",
+  name: 'Entries',
   components: {
-    Entry,
+    Entry
   },
-  data() {
+  data () {
     return {
-      title: "Hackernews",
-      newEntryTitle: "",
-    };
+      title: 'Hackernews',
+      newEntryTitle: ''
+    }
   },
   methods: {
-    addEntry(event, title) {
-
-      this.newEntryTitle = "";
-      this.$emit("add-entry", title);
-    },
+    addEntry (event, title) {
+      this.newEntryTitle = ''
+      this.$emit('add-entry', title)
+    }
   },
-  props: ["entries"],
-};
+  props: ['entries']
+}
 </script>
-
 
 <style scoped>
 </style>
