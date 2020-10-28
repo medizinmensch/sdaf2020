@@ -16,7 +16,7 @@ test("List component downvote", () => {
     }
   })
   
-  wrapper.find('button').trigger("click");
+  wrapper.find('button').trigger("click")
   expect(wrapper.emitted("upvote-entry"))  
 })
 
