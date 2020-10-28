@@ -1,6 +1,7 @@
-<<<<<<< HEAD
+
 # sdaf2020
 =======
+
 # t1b
 
 ## Project setup
@@ -25,4 +26,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
->>>>>>> master
