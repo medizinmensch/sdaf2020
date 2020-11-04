@@ -37,7 +37,11 @@ export default {
       this.$emit('add-entry', title)
     }
   },
-  props: ['entries']
+  props: {
+    title: String,
+    votes: Number,
+    id: Number,
+  }
 }
 </script>
 
