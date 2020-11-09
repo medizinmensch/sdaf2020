@@ -1,6 +1,6 @@
 <template>
   <div class="entry">
-    <p>{{ entry.votes }}🚀 {{ entry.title }}</p>
+    <p>{{ entry.votes }} - {{ entry.title }}</p>
 
     <button class="upvotebtn" @click="$emit('upvote-entry', entry)">🔼</button>
     <button @click="$emit('downvote-entry', entry)">🔽</button>
@@ -11,7 +11,13 @@
 <script>
 export default {
   name: 'Entry',
-  props: ['entry'],
+  props: {
+    entry: {
+      title: String,
+      votes: Number,
+      id: Number
+    }
+  },
   methods: {}
 }
 </script>

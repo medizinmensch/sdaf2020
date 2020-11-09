@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import Entries from './components/Entries'
+import Entries from './components/Entries/Entries'
 
 export default {
   name: 'App',
@@ -45,7 +45,7 @@ export default {
       entries: [
         {
           index: 0,
-          votes: 0,
+          votes: 3,
           title: 'IBM splits into two companies'
         },
         {
@@ -55,7 +55,7 @@ export default {
         },
         {
           index: 2,
-          votes: 3,
+          votes: 2,
           title: 'Microsft announces bankruptcy'
         }
       ]

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import Entry from './Entry'
+import Entry from '../Entry/Entry'
 
 export default {
   name: 'Entries',
@@ -37,11 +37,7 @@ export default {
       this.$emit('add-entry', title)
     }
   },
-  props: {
-    title: String,
-    votes: Number,
-    id: Number,
-  }
+  props: ['entries']
 }
 </script>
 
