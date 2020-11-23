@@ -1,5 +1,4 @@
-const { gql } = require("apollo-server")
-
+const { gql } = require('apollo-server')
 
 // Schema
 // Collection of type definitions (hence "typeDefs") that together define the "shape" of queries that are executed against your data.
@@ -22,4 +21,4 @@ module.exports = gql`
     users: [User],
     posts: [Post]
   }
-`;
+`
