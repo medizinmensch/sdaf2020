@@ -2,19 +2,22 @@ const { ApolloServer, gql } = require('apollo-server')
 const { createTestClient } = require('apollo-server-testing')
 const typeDefs = require('./typeDefs')
 const resolvers = require('./resolvers')
-const dataSources = require('./demo_data')
+const dataSources = require('./demoData')
+const CustomDataSource = require('./src/CustomDataSource')
+const { getContext } = require('./helpers/context')
 
 // 1. Setup your server (as in index.js)
+const db = new CustomDataSource()
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	dataSources
+	dataSources: () => ({ db })
 })
 
 // 2. get query and mutate objects from `createTestClient`
 // important! described in linked doc
 // https://www.apollographql.com/docs/apollo-server/testing/testing/
-const { query } = createTestClient(server)
+const { query, mutation } = createTestClient(server)
 
 // 3. gql queries for fetching your data
 const qUsers = gql`
@@ -23,13 +26,38 @@ const qUsers = gql`
 			name
 			email
 		}
-	}`
+}`
+
+const mPost = gql`
+	mutation{
+		write(post:{
+		title: "A sample title",
+		author:{
+			name: "John"
+		}
+		}){
+			title
+			votes
+		}
+}`
+
+const mUpvote = gql`
+mutation{
+  upvote(
+    id: "1"
+    voter:{
+      id: "1"
+    })
+  {
+    title
+    votes
+  }
+}
+`
 
 // 4. write the tests
-it('fetches single launch', async () => {
+it('Get all users', async () => {
 	const { data } = await query({ query: qUsers })
-	console.log(data)
-
 	// assert
 	expect(data).toEqual(
 		{
@@ -38,4 +66,34 @@ it('fetches single launch', async () => {
 				{ email: 'emilia@clark.org', name: 'Emilia' }]
 		}
 	)
+})
+
+it("creates a single post", async () => {
+	const exp = {
+		"write": {
+			"title": "A sample title",
+			"votes": 0
+		}
+	}
+
+	// console.log(exp)
+
+	const { data } = await query({ mutation: mPost })
+	// console.log(data)
+	expect(data).toEqual(exp)
+})
+
+it("upvotes a post", async () => {
+	const exp = {
+		"upvote": {
+			"title": "title 1",
+			"votes": 0
+		}
+	}
+
+	// console.log(exp)
+
+	const { data } = await query({ mutation: mUpvote })
+	// console.log(data)
+	expect(data).toEqual(exp)
 })

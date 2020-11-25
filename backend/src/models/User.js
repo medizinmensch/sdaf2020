@@ -1,9 +1,9 @@
 const uuid = require('uuid')
 const bcrypt = require('bcrypt')
 
-const salt = 9001
+const salt = parseInt(process.env.SALT)
 
-exports.modules = class User {
+module.exports = class User {
 	constructor (data) {
 		this.id = uuid.v4
 		this.pw = bcrypt.hash(data.password, salt)
