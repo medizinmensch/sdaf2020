@@ -3,22 +3,47 @@ const { gql } = require('apollo-server')
 // Schema
 // Collection of type definitions (hence "typeDefs") that together define the "shape" of queries that are executed against your data.
 module.exports = gql`
-  #  Define data structures
-  type Post {
-    title: String
-    author: User
+   type Post {
+    id: ID!
+    title: String!
+    votes: Int!
+    author: User!
   }
 
-  type User{
-      name: String
-      email: String
-  }
-
-  # Query
-  # Define what clients can query and their return type
-  # Here, the "books" query returns an array of 0+ or more Books (defined above)
-  type Query {
-    users: [User],
+  type User {
+    # ⚠️ attributes 'id' and 'name' have changed!
+    # 'id' now represents a randomly generated string, similar to 'Post.id'
+    id: ID!
+    name: String!
+    email: String!
     posts: [Post]
+  }
+
+  type Query {
+    posts: [Post]
+    users: [User]
+  }
+
+  type Mutation {
+    write(post: PostInput!): Post
+    upvote(id: ID!): Post
+    # 🚀 OPTIONAL
+    # downvote(id: ID!): Post
+    # 🚀 OPTIONAL
+    # delete(id: ID!): Post
+
+    """
+    returns a signed JWT or null
+    """
+    login(email: String!, password: String!): String
+
+    """
+    returns a signed JWT or null
+    """
+    signup(name: String!, email: String!, password: String!): String
+  }
+
+  input PostInput {
+    title: String!
   }
 `

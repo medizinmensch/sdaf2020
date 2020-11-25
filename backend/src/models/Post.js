@@ -1,8 +1,10 @@
 const uuid = require('uuid')
 
-exports.modules = class Post {
+module.exports = class Post {
 	constructor (data) {
-		this.id = uuid.v4
+		if (!data.id) this.id = uuid.v4()
+		this.votes = 0
+		this.upvoters = new Set()
 		Object.assign(this, data)
 	}
 }

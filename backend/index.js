@@ -6,28 +6,83 @@
 const { ApolloServer } = require('apollo-server')
 const typeDefs = require('./src/typeDefs')
 const resolvers = require('./src/resolvers')
-const dataSources = require('./src/demo_data')
 
-// const ShopAPI = require("./ShopAPI");
+const { permissions } = require('./src/permissions')
+const { applyMiddleware } = require('graphql-middleware')
+const { makeExecutableSchema } = require('graphql-tools')
+const { getContext } = require('./src/helpers/context')
 
-// define the data itself
-// Here it's static
+const ds = require("./src/CustomDataSource")
+const User = require('./src/models/User.js')
+const Post = require('./src/models/Post.js')
 
-// const dataSources = { dataSourceA }
+require('dotenv').config()
 
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
-const server = new ApolloServer({ typeDefs, resolvers, dataSources })
+
+// const myMiddleware = {
+// 	Query: {
+// 		users: async (resolve, parent, args, context, info) => {
+// 			console.log('args: ', args)
+// 			console.log('context: ', context)
+// 			const result = await resolve(parent, args, context, info)
+// 			return result
+// 		}
+// 	},
+// 	Mutation: {
+// 		write: async (resolve, parent, args, context, info) => {
+// 			console.log('args: ', args)
+// 			console.log('context: ', context)
+// 			const result = await resolve(parent, args, context, info)
+// 			return result
+// 		}
+// 	}
+// }
+
+
+// The ApolloServer constructor requires at least:
+// schema definition
+// set of resolvers
+
+const seed_db = new ds()
+seed_db.users = [
+	new User({ name: 'John', email: 'john@snow.org', password: "12345", id: "1" },),
+	new User({ name: 'Emilia', email: 'emilia@clark.org', password: "23456", id: "2" })
+]
+
+seed_db.posts = [
+	new Post({ title: 'title 1', author: 'john', votes: 0, id: "1" }),
+	new Post({ title: 'title 2', author: 'john', votes: 0, id: "2" }),
+	new Post({ title: 'Testy', author: 'emilia', votes: 0, id: "3" })
+]
+
+const executableSchema = makeExecutableSchema({ typeDefs, resolvers })
+
+// const schema = applyMiddleware(
+// 	makeExecutableSchema({
+// 		typeDefs,
+// 		resolvers
+// 	}),
+// 	myMiddleware,
+// );
+
+
+
+const schema = applyMiddleware(
+	executableSchema,
+	permissions
+)
+
+const server = new ApolloServer({
+	schema,
+	dataSources: () => {
+		return {
+			db: seed_db
+		}
+	},
+	context: getContext
+})
 
 // The `listen` method launches a web server.
 server.listen().then(({ url }) => {
 	console.log(`🚀 Server ready at ${url}`)
 })
-
-// query on localhost:4000
-// {
-//     books {
-//       title
-//       author
-//     }
-//   }
