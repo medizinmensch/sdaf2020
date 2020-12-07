@@ -1,24 +1,6 @@
-<<<<<<< HEAD
 # Logs
 logs
 *.log
-.DS_Store
-node_modules
-/dist
-.editorconfig
-
-
-# local env files
-.env.local
-.env.*.local
-
-# Log files
-=======
-<<<<<<< HEAD
-# Logs
-logs
-*.log
->>>>>>> c4fc11b754e18090f7f81e92f7f8b80ad68b5138
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -120,9 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
-<<<<<<< HEAD
-=======
-=======
 .DS_Store
 node_modules
 /dist
@@ -147,5 +126,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
->>>>>>> master
->>>>>>> c4fc11b754e18090f7f81e92f7f8b80ad68b5138
+
+
+archive

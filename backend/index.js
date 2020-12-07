@@ -1,43 +1,19 @@
-// https://codesandbox.io/s/5dwxp?file=/test.js
-
-// https://stackoverflow.com/questions/9901082/what-is-this-javascript-require
-// Browser JS != Node.js JS
-// -> require is the Node.js way of handling this
-const { ApolloServer } = require('apollo-server')
-const typeDefs = require('./src/typeDefs')
-const resolvers = require('./src/resolvers')
-
-const { permissions } = require('./src/permissions')
+const { ApolloServer, makeExecutableSchema } = require('apollo-server')
 const { applyMiddleware } = require('graphql-middleware')
-const { makeExecutableSchema } = require('graphql-tools')
-const { getContext } = require('./src/helpers/context')
+const { makeAugmentedSchema } = require('neo4j-graphql-js');
 
+const typeDefs = require('./src/typeDefs')
+const { permissions } = require('./src/permissions')
 const ds = require("./src/CustomDataSource")
-const User = require('./src/models/User.js')
-const Post = require('./src/models/Post.js')
+const { getContext } = require('./src/helpers/context')
+const resolvers = require('./src/resolvers')
+const User = require('./src/models/User')
+const Post = require('./src/models/Post')
+
 
 require('dotenv').config()
 
-
-// const myMiddleware = {
-// 	Query: {
-// 		users: async (resolve, parent, args, context, info) => {
-// 			console.log('args: ', args)
-// 			console.log('context: ', context)
-// 			const result = await resolve(parent, args, context, info)
-// 			return result
-// 		}
-// 	},
-// 	Mutation: {
-// 		write: async (resolve, parent, args, context, info) => {
-// 			console.log('args: ', args)
-// 			console.log('context: ', context)
-// 			const result = await resolve(parent, args, context, info)
-// 			return result
-// 		}
-// 	}
-// }
-
+const database = new ds()
 
 // The ApolloServer constructor requires at least:
 // schema definition
@@ -65,15 +41,13 @@ const executableSchema = makeExecutableSchema({ typeDefs, resolvers })
 // 	myMiddleware,
 // );
 
-
-
 const schema = applyMiddleware(
 	executableSchema,
 	permissions
 )
 
 const server = new ApolloServer({
-	schema,
+	schema: schema,
 	dataSources: () => {
 		return {
 			db: seed_db
@@ -82,7 +56,6 @@ const server = new ApolloServer({
 	context: getContext
 })
 
-// The `listen` method launches a web server.
 server.listen().then(({ url }) => {
 	console.log(`🚀 Server ready at ${url}`)
 })

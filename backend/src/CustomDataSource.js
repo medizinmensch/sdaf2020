@@ -3,12 +3,12 @@ const User = require('./models/User.js')
 const Post = require('./models/Post.js')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const salt = 9001
+// const salt = 9001
 const secret = "mySecret"
 
 module.exports = class CustomDataSource extends DataSource {
 	constructor() {
-		console.log('inside CustomDataSource')
+		console.log('CustomDataSource: constructor')
 		super()
 		this.posts = []
 		this.users = []
@@ -54,14 +54,12 @@ module.exports = class CustomDataSource extends DataSource {
 	}
 
 	login(data) {
-		console.log("cds")
 		const u = this.users.find(el => el.email === data.email)
-		console.log(u.password)
-		console.log(d.password)
-		if (u.password === bcrypt.hash(data.password, salt)) {
-			var token = jwt.sign({ userId: u.id }, secret);
-			return token
+		if (bcrypt.compareSync(data.password, u.pw)) {
+			return jwt.sign({ userId: u.id }, secret);
 		}
 		return "Username or password not found"
+
+
 	}
 }

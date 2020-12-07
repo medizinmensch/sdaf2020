@@ -47,6 +47,8 @@ module.exports = {
 			}
 		},
 		login: (_parent, args, { dataSources }) => {
+
+			console.log("in here")
 			const user = dataSources.db.login({
 				email: args.email,
 				password: args.password
