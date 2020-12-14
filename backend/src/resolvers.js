@@ -7,8 +7,8 @@ module.exports = {
 			return dataSources.db.getPosts()
 		},
 		users: (_parent, args, { dataSources }) => {
-			console.log("users q")
-			console.log(dataSources.db.getUsers())
+			// console.log("users q")
+			// console.log(dataSources.db.getUsers())
 			return dataSources.db.getUsers()
 		}
 	},
@@ -45,6 +45,25 @@ module.exports = {
 				password: args.password
 			})
 			return user
+		},
+	},
+	Post: {
+		author: (parent, args, { dataSources }) => {
+			console.log("post author resolver, parent: ", parent)
+
+			const ut = dataSources.db.getUsers()
+
+			console.log("post author resolver: ", ut)
+			p = ut.find(p => p.id === parent.author)
+			console.log(p)
+			return p
+		}
+	},
+	User: {
+		posts: (parent, args, { dataSources }) => {
+
+			const t = dataSources.db.getPosts()
+			return t.filter(p => p.author === parent.id)
 		}
 	}
 }

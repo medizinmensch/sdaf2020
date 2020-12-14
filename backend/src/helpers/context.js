@@ -11,7 +11,7 @@ async function getContext({ req }) {
             user = await findUserFromToken(currentUser.userId);
         }
     }
-    console.log("Context:", { user, driver: "not_shown" })
+    // console.log("Context:", { user, driver: "not_shown" })
     return { user, driver: getDriver() }
 }
 

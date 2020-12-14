@@ -21,9 +21,9 @@ seed_db.users = [
 ]
 
 seed_db.posts = [
-	new Post({ title: 'title 1' }, authorId = 1, id = "1"),
-	new Post({ title: 'title 2' }, authorId = 1, id = "2"),
-	new Post({ title: 'Testy' }, authorId = 1, id = "3")
+	new Post({ title: 'title 1' }, authorId = "1", id = "1"),
+	new Post({ title: 'title 2' }, authorId = "2", id = "2"),
+	new Post({ title: 'Testy' }, authorId = "2", id = "3")
 ]
 
 const executableSchema = makeAugmentedSchema({ typeDefs, resolvers })

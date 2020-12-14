@@ -19,9 +19,6 @@ module.exports = class CustomDataSource extends DataSource {
 	}
 
 	getPosts() {
-		console.log("CustomdataSource: getPosts", this.posts)
-		return this.posts
-		console.log("this.posts", this.posts)
 		return this.posts
 	}
 
@@ -36,8 +33,10 @@ module.exports = class CustomDataSource extends DataSource {
 		}
 	}
 
-	createPost(data) {
-		this.posts.push(new Post({ title: data.title }, data.user.id))
+	createPost({title, user}) {
+		console.log("title", title)
+		console.log("user", user)
+		this.posts.push(new Post({ title }, user.id))
 		return p
 	}
 
