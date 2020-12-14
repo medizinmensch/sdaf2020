@@ -10,35 +10,6 @@ const dataSource = require('./CustomDataSource')
 const User = require('./models/User')
 const Post = require('./models/Post')
 
-const seed_db = new dataSource()
-
-const context_user = new User({ name: 'John', email: 'john@snow.org', password: "12345" }, id = "1")
-
-seed_db.users = [
-    context_user,
-    new User({ name: 'Emilia', email: 'emilia@clark.org', password: "23456" }, id = "2")
-]
-
-seed_db.posts = [
-    new Post({ title: 'title 1' }, authorId = "1", id = "1"),
-    new Post({ title: 'title 2' }, authorId = "2", id = "2"),
-    new Post({ title: 'Testy' }, authorId = "2", id = "3")
-]
-const context = () => {
-    return { context_user }
-}
-
-const server = new Server({
-    context: context,
-    dataSources: () => {
-        return {
-            db: seed_db
-        }
-    },
-})
-
-const { query, mutate } = createTestClient(server)
-
 const GET_POSTS = gql`
     query {
         posts {
@@ -54,27 +25,40 @@ const GET_POSTS = gql`
 const GET_POSTS_NESTED = gql`
     query {
         posts {
-        author {
+            title
+            author {
+            name
+            id
             posts{
-            author{
+                title
+                author{
                 name
+                }
             }
             }
-        }
         }
     }
 `
 const GET_USERS = gql`
     query {
         users {
-        name
-        id
-        email
-        posts {
-            title
-        }
+            name
+            id
+            email
         }
     }
+`
+const GET_USERS_AND_POSTS = gql`
+    query {
+        users {
+            name
+            id
+            email
+            posts {
+            title
+            }
+        }
+        }
 `
 const WRITE_POST = gql`
     mutation {
@@ -87,24 +71,221 @@ const WRITE_POST = gql`
 `
 
 
-describe("Posts", () => {
-    it("List", async () => {
-        console.log("POST-LIST:");
-        await expect(query({ query: GET_POSTS })).resolves.toMatchObject({
-            errors: undefined,
-            data: {
-                posts: [
-                    { title: 'title 1', id: "1" },
-                    { title: 'title 2', id: "2" },
-                    { title: 'Testy', id: "3" }
-                ]
-            },
+const getTestClient = () => {
+    const seed_db = new dataSource()
+
+    const context_user = new User({ name: 'John', email: 'john@snow.org', password: "12345" }, id = "1")
+
+    seed_db.users = [
+        context_user,
+        new User({ name: 'Emilia', email: 'emilia@clark.org', password: "23456" }, id = "2")
+    ]
+
+    seed_db.posts = [
+        new Post({ title: 'title 1' }, authorId = "1", id = "1"),
+        new Post({ title: 'title 2' }, authorId = "2", id = "2"),
+        new Post({ title: 'Testy' }, authorId = "2", id = "3")
+    ]
+    const context = () => {
+        return { context_user }
+    }
+    const server = new Server({
+        context: context,
+        dataSources: () => {
+            return {
+                db: seed_db
+            }
+        },
+    })
+
+    return createTestClient(server)
+}
+
+
+describe("Query", () => {
+    const { query } = getTestClient()
+
+    describe("Posts", () => {
+
+        it("simple", async () => {
+            await expect(query({ query: GET_POSTS })).resolves.toMatchObject({
+                errors: undefined,
+                data: {
+                    posts: [
+                        { title: 'title 1', id: "1" },
+                        { title: 'title 2', id: "2" },
+                        { title: 'Testy', id: "3" }
+                    ]
+                },
+            })
+        })
+
+        it("Nested", async () => {
+            await expect(query({ query: GET_POSTS_NESTED })).resolves.toMatchObject({
+                errors: undefined,
+                "data": {
+                    "posts": [
+                        {
+                            "title": "title 1",
+                            "author": {
+                                "name": "John",
+                                "id": "1",
+                                "posts": [
+                                    {
+                                        "title": "title 1",
+                                        "author": {
+                                            "name": "John"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "title": "title 2",
+                            "author": {
+                                "name": "Emilia",
+                                "id": "2",
+                                "posts": [
+                                    {
+                                        "title": "title 2",
+                                        "author": {
+                                            "name": "Emilia"
+                                        }
+                                    },
+                                    {
+                                        "title": "Testy",
+                                        "author": {
+                                            "name": "Emilia"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Testy",
+                            "author": {
+                                "name": "Emilia",
+                                "id": "2",
+                                "posts": [
+                                    {
+                                        "title": "title 2",
+                                        "author": {
+                                            "name": "Emilia"
+                                        }
+                                    },
+                                    {
+                                        "title": "Testy",
+                                        "author": {
+                                            "name": "Emilia"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            })
         })
     })
 
-    // beforeEach(() => {
+    describe("Users", () => {
+        it("Simple", async () => {
+            await expect(query({ query: GET_USERS })).resolves.toMatchObject({
+                errors: undefined,
+                "data": {
+                    "users": [
+                        {
+                            "name": "John",
+                            "id": "1",
+                            "email": "john@snow.org",
+                        },
+                        {
+                            "name": "Emilia",
+                            "id": "2",
+                            "email": "emilia@clark.org",
+                        }
+                    ]
+                }
+            })
+        })
 
+        it("With posts", async () => {
+            await expect(query({ query: GET_USERS_AND_POSTS })).resolves.toMatchObject({
+                errors: undefined,
+                "data": {
+                    "users": [
+                        {
+                            "name": "John",
+                            "id": "1",
+                            "email": "john@snow.org",
+                            "posts": [
+                                {
+                                    "title": "title 1"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Emilia",
+                            "id": "2",
+                            "email": "emilia@clark.org",
+                            "posts": [
+                                {
+                                    "title": "title 2"
+                                },
+                                {
+                                    "title": "Testy"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            })
+        })
 
-    // })
+        it("Infinite nesting", async () => {
+            await expect(query({ query: GET_USERS_AND_POSTS })).resolves.toMatchObject({
+                errors: undefined,
+                "data": {
+                    "users": [
+                        {
+                            "name": "John",
+                            "id": "1",
+                            "email": "john@snow.org",
+                            "posts": [
+                                {
+                                    "title": "title 1"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Emilia",
+                            "id": "2",
+                            "email": "emilia@clark.org",
+                            "posts": [
+                                {
+                                    "title": "title 2"
+                                },
+                                {
+                                    "title": "Testy"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            })
+        })
+    })
 
 })
+
+// describe("Mutate", () => {
+//     beforeEach(() => {
+//         const { query } = getTestClient()
+//     })
+
+//     describe("Posts", () => {
+//         it("Create", () => {
+//             mutate
+//         })
+//     })
+// })
