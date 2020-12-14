@@ -8,7 +8,6 @@ const secret = "mySecret"
 
 module.exports = class CustomDataSource extends DataSource {
 	constructor() {
-		console.log('CustomDataSource: constructor')
 		super()
 		this.posts = []
 		this.users = []
@@ -34,8 +33,6 @@ module.exports = class CustomDataSource extends DataSource {
 	}
 
 	createPost({title, user}) {
-		console.log("title", title)
-		console.log("user", user)
 		this.posts.push(new Post({ title }, user.id))
 		return p
 	}

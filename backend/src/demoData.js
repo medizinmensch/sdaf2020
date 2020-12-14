@@ -5,8 +5,6 @@ const User = require('./models/User.js')
 const Post = require('./models/Post.js')
 
 module.exports = function () {
-	console.log("inside demoData")
-
 	const db = new CustomDataSource();
 	if (u.password === bcrypt.hash(data.password, salt)) {
 

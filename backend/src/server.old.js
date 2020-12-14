@@ -75,11 +75,7 @@ it("creates a single post", async () => {
 			"votes": 0
 		}
 	}
-
-	// console.log(exp)
-
 	const { data } = await query({ mutation: mPost })
-	// console.log(data)
 	expect(data).toEqual(exp)
 })
 
@@ -91,9 +87,6 @@ it("upvotes a post", async () => {
 		}
 	}
 
-	// console.log(exp)
-
 	const { data } = await query({ mutation: mUpvote })
-	// console.log(data)
 	expect(data).toEqual(exp)
 })

@@ -2,7 +2,6 @@ const uuid = require('uuid')
 
 module.exports = class Post {
 	constructor(data, author_id, id = uuid.v4()) {
-		console.log("!!author_id", !!author_id)
 		if (!!author_id) {
 			this.id = id
 			this.upvoters = new Set()
@@ -13,7 +12,6 @@ module.exports = class Post {
 
 			Object.assign(this, data)
 		}
-		console.log(this)
 	}
 
 	getVoteCount() {

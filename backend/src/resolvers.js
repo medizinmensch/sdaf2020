@@ -7,15 +7,12 @@ module.exports = {
 			return dataSources.db.getPosts()
 		},
 		users: (_parent, args, { dataSources }) => {
-			// console.log("users q")
-			// console.log(dataSources.db.getUsers())
 			return dataSources.db.getUsers()
 		}
 	},
 	Mutation:
 	{
 		write: (_parent, args, { user, dataSources }) => {
-			console.log("mutation write: user: ", user)
 			const p = dataSources.db.createPost({
 				title: args["post"]["title"],
 				user
@@ -25,7 +22,6 @@ module.exports = {
 		upvote: (_parent, args, { user, dataSources }) => {
 			const updatedPost = dataSources.db.posts.find(post => post.id === args.id)
 			updatedPost.upvoters.add(user.id)
-			console.log(updatedPost)
 			dataSources.db.updatePost(updatedPost)
 			return updatedPost
 		},
@@ -49,14 +45,7 @@ module.exports = {
 	},
 	Post: {
 		author: (parent, args, { dataSources }) => {
-			console.log("post author resolver, parent: ", parent)
-
-			const ut = dataSources.db.getUsers()
-
-			console.log("post author resolver: ", ut)
-			p = ut.find(p => p.id === parent.author)
-			console.log(p)
-			return p
+			return dataSources.db.getUsers().find(p => p.id === parent.author)
 		}
 	},
 	User: {

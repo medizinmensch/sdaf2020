@@ -4,7 +4,6 @@ const { rule, shield, allow } = require('graphql-shield');
 
 const isAuthenticated = rule({ cache: 'contextual' })(
 	async (parent, args, ctx, info) => {
-		console.log("Authenticated?", ctx.user !== null)
 		return !!ctx.user
 	},
 )
