@@ -13,8 +13,9 @@ module.exports = {
 	Mutation:
 	{
 		write: (_parent, args, { user, dataSources }) => {
+			console.log("args", args.post.title);
 			const p = dataSources.db.createPost({
-				title: args["post"]["title"],
+				title: args.post.title,
 				user
 			})
 			return p;

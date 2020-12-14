@@ -61,14 +61,19 @@ const GET_USERS_AND_POSTS = gql`
         }
 `
 const WRITE_POST = gql`
-    mutation {
-        write(post:{
-            title: "A sample title",
-            }){
-        title
+    mutation ($post: PostInput!) {
+        write(post: $post){
+            author{
+                name
+                posts{
+                    title
+                }
+            }
         }
     }
 `
+
+
 
 
 const getTestClient = () => {
@@ -278,14 +283,63 @@ describe("Query", () => {
 
 })
 
-// describe("Mutate", () => {
-//     beforeEach(() => {
-//         const { query } = getTestClient()
-//     })
+describe("Mutate", () => {
+    const { mutate } = getTestClient()
 
-//     describe("Posts", () => {
-//         it("Create", () => {
-//             mutate
-//         })
-//     })
-// })
+    const createTestMutation = (title) => {
+        mutate({
+            mutation: gql`
+                mutation{
+                    write(post:{
+                        title: "${title}",
+                        }){
+                            title
+                    }
+                }
+            `
+        })
+    }
+
+    describe("Posts", () => {
+        it("Create", async () => {
+            // const action = () => {
+            //     mutate({
+            //         mutation: WRITE_POST,
+            //         variables: { title: "A sample title" }
+            //     })
+            // }
+            // await expect(action()).resolves.toMatchObject({
+            //     errors: undefined,
+            //     "data": {
+            //         "write": {
+            //             "title": "A sample title"
+            //         }
+            //     }
+            // })
+
+
+
+            // export const DELETE_DOG_MUTATION = gql`
+            //     mutation deleteDog($name: String!) {
+            //         deleteDog(name: $name) {
+            //         id
+            //         name
+            //         breed
+            //         }
+            //     }
+            // `;
+            // const WRITE = gql`
+            // mutation write($title: String!){
+            //     write(post:{
+            //         title: "${title}",
+            //         }){
+            //             title
+            //     }
+            // }
+
+
+            console.log(await createTestMutation("A sample title"))
+
+        })
+    })
+})

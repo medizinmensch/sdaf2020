@@ -33,7 +33,8 @@ module.exports = class CustomDataSource extends DataSource {
 	}
 
 	createPost({title, user}) {
-		this.posts.push(new Post({ title }, user.id))
+		const p = new Post({ title }, user.id)
+		this.posts.push(p)
 		return p
 	}
 
