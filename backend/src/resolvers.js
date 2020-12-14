@@ -25,6 +25,7 @@ module.exports = {
 		upvote: (_parent, args, { user, dataSources }) => {
 			const updatedPost = dataSources.db.posts.find(post => post.id === args.id)
 			updatedPost.upvoters.add(user.id)
+			console.log(updatedPost)
 			dataSources.db.updatePost(updatedPost)
 			return updatedPost
 		},
