@@ -13,33 +13,20 @@ const Post = require('./src/models/Post')
 
 require('dotenv').config()
 
-const database = new ds()
-
-// The ApolloServer constructor requires at least:
-// schema definition
-// set of resolvers
-
+// const database = new ds()
 const seed_db = new ds()
 seed_db.users = [
-	new User({ name: 'John', email: 'john@snow.org', password: "12345", id: "1" },),
-	new User({ name: 'Emilia', email: 'emilia@clark.org', password: "23456", id: "2" })
+	new User({ name: 'John', email: 'john@snow.org', password: "12345" }, id = "1"),
+	new User({ name: 'Emilia', email: 'emilia@clark.org', password: "23456" }, id = "2")
 ]
 
 seed_db.posts = [
-	new Post({ title: 'title 1', author: 'john', votes: 0, id: "1" }),
-	new Post({ title: 'title 2', author: 'john', votes: 0, id: "2" }),
-	new Post({ title: 'Testy', author: 'emilia', votes: 0, id: "3" })
+	new Post({ title: 'title 1' }, authorId = 1, id = "1"),
+	new Post({ title: 'title 2' }, authorId = 1, id = "2"),
+	new Post({ title: 'Testy' }, authorId = 1, id = "3")
 ]
 
-const executableSchema = makeExecutableSchema({ typeDefs, resolvers })
-
-// const schema = applyMiddleware(
-// 	makeExecutableSchema({
-// 		typeDefs,
-// 		resolvers
-// 	}),
-// 	myMiddleware,
-// );
+const executableSchema = makeAugmentedSchema({ typeDefs, resolvers })
 
 const schema = applyMiddleware(
 	executableSchema,

@@ -19,6 +19,9 @@ module.exports = class CustomDataSource extends DataSource {
 	}
 
 	getPosts() {
+		console.log("CustomdataSource: getPosts", this.posts)
+		return this.posts
+		console.log("this.posts", this.posts)
 		return this.posts
 	}
 
@@ -31,12 +34,10 @@ module.exports = class CustomDataSource extends DataSource {
 		else {
 			return "There is already an account with that email. Forgot your password?"
 		}
-
 	}
 
 	createPost(data) {
-		const p = new Post(data)
-		this.posts.push(p)
+		this.posts.push(new Post({ title: data.title }, data.user.id))
 		return p
 	}
 
@@ -59,7 +60,5 @@ module.exports = class CustomDataSource extends DataSource {
 			return jwt.sign({ userId: u.id }, secret);
 		}
 		return "Username or password not found"
-
-
 	}
 }
