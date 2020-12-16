@@ -1,7 +1,14 @@
+const { ApolloServer } = require('apollo-server')
 const Server = require('./src/server');
 
-server = new Server()
+const playground = {
+	settings: {
+		'scheam.polling.enable': false
+	}
+};
 
-server.listen().then(({ url }) => {
+(async () => {
+	const server = await Server(ApolloServer, { playground })
+	const { url } = await server.listen()
 	console.log(`🚀 Server ready at ${url}`)
-})
+})()

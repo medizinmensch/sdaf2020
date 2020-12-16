@@ -1,12 +1,24 @@
-const uuid = require('uuid')
-const bcrypt = require('bcrypt')
-
-const salt = parseInt(process.env.SALT)
-
-module.exports = class User {
-	constructor (data, id = uuid.v4) {
-		this.id = id
-		this.pw = bcrypt.hashSync(data.password, salt)
-		Object.assign(this, data)
+module.exports = {
+	id: {
+		primary: true,
+		type: 'uuid',
+		required: true
+	},
+	name: {
+		type: 'string',
+		required: true
+	},
+	email: {
+		type: 'number',
+		required: true,
+		unique: true
+	},
+	password: {
+		type: 'string',
+		strip: true
+	},
+	hashedPassword: {
+		type: 'string',
+		required: true
 	}
 }

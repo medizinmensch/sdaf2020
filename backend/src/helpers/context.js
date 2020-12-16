@@ -1,5 +1,5 @@
 const { verifyToken } = require('./jwt.js');
-const { getDriver } = require('../helpers/neo4j');
+const { driver } = require('./driver');
 
 async function getContext({ req }) {
     let user = null
@@ -8,11 +8,11 @@ async function getContext({ req }) {
         const currentUser = verifyToken(token);
         user = await findUserFromToken(currentUser.userId);
     }
-    return { user, driver: getDriver() }
+    return { user, driver }
 }
 
 async function findUserFromToken(user_id) {
-    const session = getDriver().session()
+    const session = driver.session()
     try {
         const result = await session.run(
             'MATCH (u:User) WHERE u.id = $id RETURN u',
@@ -22,7 +22,6 @@ async function findUserFromToken(user_id) {
     } finally {
         await session.close()
     }
-    return null
 }
 
 module.exports.getContext = getContext;

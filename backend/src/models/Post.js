@@ -1,20 +1,19 @@
-const uuid = require('uuid')
-
-module.exports = class Post {
-	constructor(data, author_id, id = uuid.v4()) {
-		if (!!author_id) {
-			this.id = id
-			this.upvoters = new Set()
-			this.votes = () => {
-				return this.upvoters.size
-			}
-			this.author = author_id
-
-			Object.assign(this, data)
-		}
-	}
-
-	getVoteCount() {
-		return this.upvoters.size
+module.exports = {
+	id: {
+		primary: true,
+		type: uuid,
+		required: true
+	},
+	title: {
+		type: 'string'
+	},
+	votes: {
+		type: 'number'
+	},
+	author: {
+		type: 'relationship',
+		target: 'User',
+		relationship: 'WROTE',
+		direction: 'in'
 	}
 }

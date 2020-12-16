@@ -4,15 +4,7 @@
 
 const { delegateToSchema } = require('@graphql-tools/delegate');
 
-module.exports = {
-	Query: {
-		posts: (_parent, args, { dataSources }) => {
-			return dataSources.db.getPosts()
-		},
-		users: (_parent, args, { dataSources }) => {
-			return dataSources.db.getUsers()
-		}
-	},
+module.exports = () => ({
 	Mutation:
 	{
 		write: (_parent, args, { user, dataSources }) => {
@@ -59,4 +51,4 @@ module.exports = {
 			return t.filter(p => p.author === parent.id)
 		}
 	}
-}
+})

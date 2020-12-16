@@ -8,7 +8,7 @@ const Server = require('./server')
 
 const dataSource = require('./dataSources/inMemory')
 const User = require('./models/User')
-const Post = require('./models/Post')
+const Post = require('./entities/Post')
 
 const GET_POSTS = gql`
     query {
