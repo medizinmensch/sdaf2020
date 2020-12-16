@@ -1,10 +1,10 @@
-const { ApolloServer, makeExecutableSchema } = require('apollo-server')
+const { ApolloServer } = require('apollo-server')
 const { applyMiddleware } = require('graphql-middleware')
 const { makeAugmentedSchema } = require('neo4j-graphql-js');
 
 const typeDefs = require('./typeDefs')
 const { permissions } = require('./permissions')
-const ds = require("./CustomDataSource")
+const ds = require("./dataSources/inMemory")
 const { getContext } = require('./helpers/context')
 const resolvers = require('./resolvers')
 const User = require('./models/User')
@@ -14,18 +14,19 @@ const Post = require('./models/Post')
 require('dotenv').config()
 
 // const database = new ds()
-const seed_db = new ds()
-seed_db.users = [
-	new User({ name: 'John', email: 'john@snow.org', password: "12345" }, id = "1"),
-	new User({ name: 'Emilia', email: 'emilia@clark.org', password: "23456" }, id = "2")
-]
-
-seed_db.posts = [
-	new Post({ title: 'title 1' }, authorId = "1", id = "1"),
-	new Post({ title: 'title 2' }, authorId = "2", id = "2"),
-	new Post({ title: 'Testy' }, authorId = "2", id = "3")
-]
-
+const seed_db = () => {
+	const seed_db = new ds()
+	seed_db.users = [
+		new User({ name: 'John', email: 'john@snow.org', password: "12345" }, id = "1"),
+		new User({ name: 'Emilia', email: 'emilia@clark.org', password: "23456" }, id = "2")
+	]
+	seed_db.posts = [
+		new Post({ title: 'title 1' }, authorId = "1", id = "1"),
+		new Post({ title: 'title 2' }, authorId = "2", id = "2"),
+		new Post({ title: 'Testy' }, authorId = "2", id = "3")
+	]
+	return seed_db
+}
 const executableSchema = makeAugmentedSchema({ typeDefs, resolvers })
 
 const schema = applyMiddleware(
@@ -34,12 +35,12 @@ const schema = applyMiddleware(
 )
 
 class Server {
-	constructor(opts){
+	constructor(opts) {
 		return new ApolloServer({
 			schema: schema,
 			dataSources: () => {
 				return {
-					db: seed_db
+					db: seed_db()
 				}
 			},
 			context: getContext,

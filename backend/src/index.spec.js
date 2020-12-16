@@ -6,7 +6,7 @@ const { gql } = require('apollo-server')
 
 const Server = require('./server')
 
-const dataSource = require('./CustomDataSource')
+const dataSource = require('./dataSources/inMemory')
 const User = require('./models/User')
 const Post = require('./models/Post')
 

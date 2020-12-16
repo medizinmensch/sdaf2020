@@ -3,13 +3,10 @@ const { getDriver } = require('../helpers/neo4j');
 
 async function getContext({ req }) {
     let user = null
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.replace('Bearer ', '')
-        if (token) {
-            const currentUser = verifyToken(token);
-            user = await findUserFromToken(currentUser.userId);
-        }
+    const token = (req.headers.authorization || '').replace('Bearer ', '');
+    if (token) {
+        const currentUser = verifyToken(token);
+        user = await findUserFromToken(currentUser.userId);
     }
     return { user, driver: getDriver() }
 }
