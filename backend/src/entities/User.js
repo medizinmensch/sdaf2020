@@ -1,12 +1,11 @@
-const uuid = require('uuid')
+// const uuid = require('uuid')
 const bcrypt = require('bcrypt')
 const neode = require('../dataSources/neode')
 
 const salt = parseInt(process.env.SALT)
 
 module.exports = class User {
-	constructor(data, id = uuid.v4) {
-		this.id = id
+	constructor(data) {
 		Object.assign(this, data)
 	}
 
@@ -33,4 +32,8 @@ module.exports = class User {
 		const nodes = await neode.all('User')
 		return nodes.map(node => new User({ ...node.properties(), node }))
 	}
+
+	checkPassword(password) {
+		return bcrypt.compareSync(password, this.hashedPassword);
+	  }
 }

@@ -2,53 +2,74 @@
 // Define the technique for fetching the types defined in the schema
 // This resolver retrieves books from the "books" array above.
 
+// TODO: 
+// * Query of Posts and Users
+// * Upvoting
+
+
 const { delegateToSchema } = require('@graphql-tools/delegate');
+
+const { verifyToken, createJWTToken } = require('./helpers/jwt');
+
+const {
+	AuthenticationError,
+	UserInputError,
+	ForbiddenError
+} = require('apollo-server')
+
+
+const Post = require('./entities/Post')
+const User = require('./entities/User')
 
 module.exports = () => ({
 	Mutation:
 	{
-		write: (_parent, args, { user, dataSources }) => {
-			console.log("args", args.post.title);
-			const p = dataSources.db.createPost({
-				title: args.post.title,
-				user
-			})
-			return p;
+		write: (_parent, args, { user }) => {
+			const post = new Post(
+				{
+					title: args.post.title,
+					author: user
+				})
+			post.save()
+			return post
 		},
-		upvote: (_parent, args, { user, dataSources }) => {
-			const updatedPost = dataSources.db.posts.find(post => post.id === args.id)
-			updatedPost.upvoters.add(user.id)
-			dataSources.db.updatePost(updatedPost)
+		upvote: async (_parent, args, ctx) => {
+			console.log("ctx.user", ctx.user);
+			const updatedPost = await Post.first({ id: args.id })
+			if (!updatedPost) throw new UserInputError('ID not found');
+			console.log("updatedPost", updatedPost);
+			updatedPost.upvoters.add(ctx.user.id)
+			await updatedPost.save()
+
 			return updatedPost
 		},
-		signup: (_parent, args, { dataSources }) => {
-			if (args.password.length < 8) {
-				return "Password to short"
-			}
-			return dataSources.db.createUser({
-				name: args.name,
-				email: args.email,
-				password: args.password
-			})
+		signup: async (_parent, { email, password, name }, ctx) => {
+			const existingPerson = await User.first({ email });
+			if (existingPerson) throw new UserInputError('email address not unique');
+			const user = new User({ name, email, password });
+			await user.save();
+			return "Successfully created user."
 		},
-		login: (_parent, args, { dataSources }) => {
-			const user = dataSources.db.login({
-				email: args.email,
-				password: args.password
-			})
-			return user
+		login: async (_parent, { email, password }, ctx) => {
+			const user = await User.first({ email });
+			if (user && user.checkPassword(password)) {
+				return createJWTToken(user.id);
+			}
+			throw new AuthenticationError('Wrong email/password combination!');
 		},
 	},
 	Post: {
-		author: (parent, args, { dataSources }) => {
-			return dataSources.db.getUsers().find(p => p.id === parent.author)
+		author: async (parent, args, ctx) => {
+			// const all = await User.all()
+			// return all.find(p => p.id === parent.author.id)
+
+			return User.first({ id: parent.author.id })
 		}
 	},
 	User: {
-		posts: (parent, args, { dataSources }) => {
-
-			const t = dataSources.db.getPosts()
-			return t.filter(p => p.author === parent.id)
+		posts: (parent, args, ctx) => {
+			const t = Post.all()
+			return t.filter(p => p.author.id === parent.id)
 		}
 	}
 })

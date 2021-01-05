@@ -5,7 +5,7 @@ const { gql } = require('apollo-server')
 module.exports = gql`
   type Query {
     posts: [Post]
-    users: [User] @relation(name: "WROTE", direction: "IN")
+    users: [User] @relation(name: "WROTE", direction: "OUT")
   }
 
   type Mutation {
@@ -19,7 +19,7 @@ module.exports = gql`
     """
     returns a signed JWT or null
     """
-    login(email: String!, password: String!): String
+    login(email: String!, password: String!): String 
 
     """
     returns a signed JWT or null

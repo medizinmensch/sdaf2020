@@ -9,7 +9,7 @@ module.exports = {
 		required: true
 	},
 	email: {
-		type: 'number',
+		type: 'string',
 		required: true,
 		unique: true
 	},

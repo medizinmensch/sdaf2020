@@ -1,18 +1,12 @@
-const uuid = require('uuid')
+const uuid = require('uuid');
 const neode = require('../dataSources/neode')
 
 module.exports = class Post {
-	constructor(data, author_id, id = uuid.v4()) {
-		if (!!author_id) {
-			this.id = id
-			this.upvoters = new Set()
-			this.votes = () => {
-				return this.upvoters.size
-			}
-			this.author = author_id
-
-			Object.assign(this, data)
-		}
+	constructor(data) {
+		this.id = uuid.v4()
+		this.upvoters = new Set()
+		this.votes = () => this.upvoters.size
+		Object.assign(this, data)
 	}
 
 	getVoteCount() {
@@ -20,9 +14,14 @@ module.exports = class Post {
 	}
 
 	async save() {
-		const node = await neode.create('Post', this)
-		Object.assign(this, { ...node.properties(), node })
-		return this
+		console.log("this (post)", this);
+		if (!(this.author && this.author.node)) {
+			throw new Error('author node is missing!');
+		}
+		const node = await neode.create('Post', this);
+		Object.assign(this, { ...node.properties(), node });
+		await node.relateTo(this.author.node, 'wrote');
+		return this;
 	}
 
 	static async first(props) {

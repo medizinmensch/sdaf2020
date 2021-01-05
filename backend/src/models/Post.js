@@ -1,19 +1,16 @@
 module.exports = {
 	id: {
 		primary: true,
-		type: uuid,
+		type: 'uuid',
 		required: true
 	},
 	title: {
 		type: 'string'
 	},
-	votes: {
-		type: 'number'
-	},
-	author: {
+	wrote: {
 		type: 'relationship',
 		target: 'User',
-		relationship: 'WROTE',
+		relationship: 'wrote',
 		direction: 'in'
 	}
 }

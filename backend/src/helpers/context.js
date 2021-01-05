@@ -1,27 +1,21 @@
 const { verifyToken } = require('./jwt.js');
 const { driver } = require('./driver');
 
-async function getContext({ req }) {
+const User = require('./../entities/User')
+
+async function context({ req }) {
+    
     let user = null
     const token = (req.headers.authorization || '').replace('Bearer ', '');
+    
     if (token) {
-        const currentUser = verifyToken(token);
-        user = await findUserFromToken(currentUser.userId);
+        const user_uuid = verifyToken(token);
+        user = await User.first({ id: user_uuid })
     }
+    
+    if (!!user) console.log("user.name", user.name);
+    console.log("test");
     return { user, driver }
 }
 
-async function findUserFromToken(user_id) {
-    const session = driver.session()
-    try {
-        const result = await session.run(
-            'MATCH (u:User) WHERE u.id = $id RETURN u',
-            { id: user_id }
-        )
-        return result.records[0].get(0).properties
-    } finally {
-        await session.close()
-    }
-}
-
-module.exports.getContext = getContext;
+module.exports = context;

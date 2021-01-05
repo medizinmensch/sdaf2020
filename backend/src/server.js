@@ -1,6 +1,6 @@
-// const { applyMiddleware } = require('graphql-middleware')
 const Schema = require('./schema')
 const context = require('./helpers/context');
+// const { applyMiddleware } = require('graphql-middleware')
 // const { permissions } = require('./permissions')
 
 // const schema = applyMiddleware(
