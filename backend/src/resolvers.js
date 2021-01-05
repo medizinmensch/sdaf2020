@@ -8,7 +8,7 @@
 
 
 const { delegateToSchema } = require('@graphql-tools/delegate');
-
+const { neo4jgraphql } = require('neo4j-graphql-js')
 const { verifyToken, createJWTToken } = require('./helpers/jwt');
 
 const {
@@ -18,10 +18,26 @@ const {
 } = require('apollo-server')
 
 
-const Post = require('./entities/Post')
-const User = require('./entities/User')
+const Post = require('./db/entities/Post')
+const User = require('./db/entities/User')
 
-module.exports = () => ({
+module.exports = ({ subschema }) => ({
+	Query: {
+		profile: async (_parent, _args, ctx, info) => {
+			console.log("ctx", ctx);
+			const [user] = await delegateToSchema({
+				schema: subschema,
+				operation: 'query',
+				fieldName: 'User',
+				args: {
+					id: ctx.user.id
+				},
+				context: ctx,
+				info
+			});
+			return user;
+		}
+	},
 	Mutation:
 	{
 		write: (_parent, args, { user }) => {

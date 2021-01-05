@@ -1,6 +1,5 @@
-// const uuid = require('uuid')
 const bcrypt = require('bcrypt')
-const neode = require('../dataSources/neode')
+const neode = require('../../dataSources/neode')
 
 const salt = parseInt(process.env.SALT)
 

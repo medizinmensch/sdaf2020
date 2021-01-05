@@ -8,17 +8,15 @@ const typeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    posts: [Post] @relation(name: "WROTE", direction: "OUT")
+    posts: [Post] @relation(name: "wrote", direction: "OUT")
   }
   
    type Post {
     id: ID!
     title: String!
     votes: Int!
-    author: User @relation(name: "WROTE", direction: "IN")
+    author: User @relation(name: "wrote", direction: "IN")
   }
-
-
 `
 
 const schema = makeAugmentedSchema({ typeDefs })

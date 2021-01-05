@@ -1,7 +1,7 @@
 const { verifyToken } = require('./jwt.js');
 const { driver } = require('./driver');
 
-const User = require('./../entities/User')
+const User = require('../db/entities/User')
 
 async function context({ req }) {
     
@@ -14,7 +14,6 @@ async function context({ req }) {
     }
     
     if (!!user) console.log("user.name", user.name);
-    console.log("test");
     return { user, driver }
 }
 

@@ -1,5 +1,5 @@
 const uuid = require('uuid');
-const neode = require('../dataSources/neode')
+const neode = require('../../dataSources/neode')
 
 module.exports = class Post {
 	constructor(data) {

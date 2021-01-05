@@ -1,6 +1,6 @@
 const { DataSource } = require('apollo-datasource')
-const User = require('../models/User.js')
-const Post = require('../entities/Post.js')
+const User = require('../db/models/User.js')
+const Post = require('../db/entities/Post.js')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 // const salt = 9001

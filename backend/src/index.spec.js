@@ -7,8 +7,8 @@ const { gql } = require('apollo-server')
 const Server = require('./server')
 
 const dataSource = require('./dataSources/inMemory')
-const User = require('./models/User')
-const Post = require('./entities/Post')
+const User = require('./db/models/User')
+const Post = require('./db/entities/Post')
 
 const GET_POSTS = gql`
     query {

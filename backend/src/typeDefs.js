@@ -5,7 +5,8 @@ const { gql } = require('apollo-server')
 module.exports = gql`
   type Query {
     posts: [Post]
-    users: [User] @relation(name: "WROTE", direction: "OUT")
+    users: [User] @relation(name: "wrote", direction: "OUT")
+    profile: User
   }
 
   type Mutation {
