@@ -24,7 +24,6 @@ const User = require('./db/entities/User')
 module.exports = ({ subschema }) => ({
 	Query: {
 		profile: async (_parent, _args, ctx, info) => {
-			console.log("ctx", ctx);
 			const [user] = await delegateToSchema({
 				schema: subschema,
 				operation: 'query',
@@ -36,7 +35,27 @@ module.exports = ({ subschema }) => ({
 				info
 			});
 			return user;
-		}
+		},
+		users: async (_parent, _args, ctx, info) => {
+			return await delegateToSchema({
+				schema: subschema,
+				operation: 'query',
+				fieldName: 'User',
+				args: {},
+				context: ctx,
+				info
+			});
+		},
+		posts: async (_parent, _args, ctx, info) => {
+			return await delegateToSchema({
+				schema: subschema,
+				operation: 'query',
+				fieldName: 'Post',
+				args: {},
+				context: ctx,
+				info
+			});
+		},
 	},
 	Mutation:
 	{
@@ -76,16 +95,12 @@ module.exports = ({ subschema }) => ({
 	},
 	Post: {
 		author: async (parent, args, ctx) => {
-			// const all = await User.all()
-			// return all.find(p => p.id === parent.author.id)
-
 			return User.first({ id: parent.author.id })
 		}
 	},
 	User: {
-		posts: (parent, args, ctx) => {
-			const t = Post.all()
-			return t.filter(p => p.author.id === parent.id)
+		posts: async (parent, args, ctx) => {
+			return parent.posts
 		}
 	}
 })

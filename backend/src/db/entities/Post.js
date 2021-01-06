@@ -34,4 +34,5 @@ module.exports = class Post {
 		const nodes = await neode.all('Post')
 		return nodes.map(node => new Post({ ...node.properties(), node }))
 	}
+
 }
