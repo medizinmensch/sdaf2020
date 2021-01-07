@@ -6,7 +6,6 @@
 // * Query of Posts and Users
 // * Upvoting
 
-
 const { delegateToSchema } = require('@graphql-tools/delegate');
 const { neo4jgraphql } = require('neo4j-graphql-js')
 const { verifyToken, createJWTToken } = require('./helpers/jwt');
@@ -75,7 +74,6 @@ module.exports = ({ subschema }) => ({
 			console.log("updatedPost", updatedPost);
 			updatedPost.upvoters.add(ctx.user.id)
 			await updatedPost.save()
-
 			return updatedPost
 		},
 		signup: async (_parent, { email, password, name }, ctx) => {

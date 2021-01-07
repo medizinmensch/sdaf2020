@@ -16,7 +16,8 @@ module.exports = class Post {
 	async save() {
 		console.log("this (post)", this);
 		if (!(this.author && this.author.node)) {
-			throw new Error('author node is missing!');
+			console.log("Author node is missing");
+			return 'Cannot save Post. Author node is missing!';
 		}
 		const node = await neode.create('Post', this);
 		Object.assign(this, { ...node.properties(), node });
