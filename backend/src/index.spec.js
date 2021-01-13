@@ -7,7 +7,7 @@ const { gql } = require('apollo-server')
 const Server = require('./server')
 
 const dataSource = require('./dataSources/inMemory')
-const User = require('./db/models/User')
+const User = require('./db/entities/User')
 const Post = require('./db/entities/Post')
 
 const GET_POSTS = gql`
@@ -94,7 +94,7 @@ const getTestClient = () => {
     const context = () => {
         return { context_user }
     }
-    const server = new Server({
+    const server = Server({
         context: context,
         dataSources: () => {
             return {
