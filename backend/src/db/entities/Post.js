@@ -4,13 +4,7 @@ const neode = require('../../dataSources/neode')
 module.exports = class Post {
 	constructor(data) {
 		this.id = uuid.v4()
-		this.upvoters = new Set()
-		this.votes = () => this.upvoters.size
 		Object.assign(this, data)
-	}
-
-	getVoteCount() {
-		return this.upvoters.size
 	}
 
 	async save() {
@@ -34,6 +28,12 @@ module.exports = class Post {
 	static async all() {
 		const nodes = await neode.all('Post')
 		return nodes.map(node => new Post({ ...node.properties(), node }))
+	}
+
+	async upvote(voter) {
+		if (!(voter && voter.node)) throw new Error("voter node is missing!");
+		console.log("voter", voter);
+		await this.node.relateTo(voter.node, "voters");
 	}
 
 }

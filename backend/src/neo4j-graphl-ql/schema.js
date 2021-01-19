@@ -14,7 +14,8 @@ const typeDefs = gql`
    type Post {
     id: ID!
     title: String!
-    votes: Int!
+    voters: [User] @relation(name: "UPVOTED_BY", direction: "OUT")
+    votes: Int
     author: User @relation(name: "wrote", direction: "IN")
   }
 `

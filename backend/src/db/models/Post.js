@@ -7,6 +7,12 @@ module.exports = {
 	title: {
 		type: 'string'
 	},
+	voters: {
+        type: "relationship",
+        target: "User",
+        relationship: "UPVOTED_BY",
+        direction: "out",
+    },
 	wrote: {
 		type: 'relationship',
 		target: 'User',

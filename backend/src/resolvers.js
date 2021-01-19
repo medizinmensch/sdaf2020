@@ -67,14 +67,24 @@ module.exports = ({ subschema }) => ({
 			post.save()
 			return post
 		},
-		upvote: async (_parent, args, ctx) => {
-			console.log("ctx.user", ctx.user);
-			const updatedPost = await Post.first({ id: args.id })
-			if (!updatedPost) throw new UserInputError('ID not found');
-			console.log("updatedPost", updatedPost);
-			updatedPost.upvoters.add(ctx.user.id)
-			await updatedPost.save()
-			return updatedPost
+		upvote: async (_parent, args, context, info) => {
+			const user = await User.first({id: context.user.id});
+			if (!user && !user.checkPassword(password)) return new Error("User does not exist")
+
+			let post = await Post.first({ id: args.id });
+			if (!post) return new Error("Post does not exist")
+			await post.upvote(user);
+
+			const [resolvedPost] = await delegateToSchema({
+				schema: subschema,
+				operation: "query",
+				fieldName: "Post",
+				args: { id: post.id },
+				context,
+				info,
+			});
+
+			return resolvedPost;
 		},
 		signup: async (_parent, { email, password, name }, ctx) => {
 			const existingPerson = await User.first({ email });
@@ -94,11 +104,17 @@ module.exports = ({ subschema }) => ({
 	Post: {
 		author: async (parent, args, ctx) => {
 			return User.first({ id: parent.author.id })
-		}
+		},
+		votes: {
+			selectionSet: "{ voters { id } }",
+			resolve: (post) => {
+				return post.voters ? post.voters.length : 0;
+			},
+		},
 	},
 	User: {
 		posts: async (parent, args, ctx) => {
 			return parent.posts
-		}
+		},
 	}
 })
