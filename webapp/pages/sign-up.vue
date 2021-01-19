@@ -1,11 +1,13 @@
 <template>
   <div>
-    <form @submit.prevent="login($event, email, password)">
+    <h1>Please sign up</h1>
+    <form @submit.prevent="signup($event, name, email, password)">
+      <input type="text" v-model="name" />
       <input type="text" v-model="email" />
       <input type="text" v-model="password" />
-      <input type="submit" value="Login" />
+      <input type="submit" value="Sign up" />
     </form>
-    <p>{{ token }}</p>
+    <h2>{{ response }}</h2>
   </div>
 </template>
 
@@ -13,35 +15,36 @@
 import gql from "graphql-tag";
 
 export default {
-  name: "login",
+  name: "signup",
   components: {},
   methods: {
-    async login(event, email, password) {
+    async signup(event, name, email, password) {
+      console.log("name", name);
       console.log("email", email);
       console.log("password", password);
 
+      // Call to the graphql mutation
       const result = await this.$apollo.mutate({
         mutation: gql`
-          mutation($email: String!, $password: String!) {
-            login(email: $email, password: $password)
+          mutation($name: String!, $email: String!, $password: String!) {
+            signup(name: $name, email: $email, password: $password)
           }
         `,
         variables: {
-          email,
-          password,
+          name: name,
+          email: email,
+          password: password,
         },
       });
-      this.token = result.data.login;
-      this.$apolloHelpers.onLogin(this.token)
-      console.log("token", this.$apolloHelpers.getToken());
-      this.$store.commit("setUser", { token: this.token, email: email });
+      this.response = result.data.signup;
     },
   },
   data() {
     return {
       email: "",
       password: "",
-      token: "",
+      name: "",
+      response: "",
     };
   },
   apollo: {},

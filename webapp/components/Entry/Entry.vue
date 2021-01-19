@@ -1,25 +1,35 @@
 <template>
   <div class="entry">
     <p>{{ entry.votes }} - {{ entry.title }}</p>
+    <!-- <p>{{ entry.title }}</p> -->
 
-    <button class="upvotebtn" @click="$emit('upvote-entry', entry)">🔼</button>
-    <button @click="$emit('downvote-entry', entry)">🔽</button>
-    <button @click="$emit('del-entry', entry)">🗑</button>
+    <button class="upvotebtn" @click="'upvote-entry', entry">🔼</button>
+    <button @click="'downvote-entry', entry">🔽</button>
+    <button @click="'del-entry', entry">🗑</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Entry',
+  name: "Entry",
   props: {
     entry: {
       title: String,
       votes: Number,
-      id: Number
-    }
+      id: Number,
+    },
   },
-  methods: {}
-}
+  methods: {
+    upvoteEntry(entry) {
+      console.log(entry);
+      this.posts.find((element) => element.index === entry.index).votes++;
+    },
+    downvoteEntry(entry) {
+      console.log(entry);
+      this.posts.find((element) => element.index === entry.index).votes--;
+    },
+  },
+};
 </script>
 
 <style scoped>

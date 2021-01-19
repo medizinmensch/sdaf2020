@@ -1,15 +1,14 @@
 <template>
   <div>
     <h1>{{ title }}</h1>
-    <div v-bind:key="entry.index" v-for="entry in entries">
+    <div v-bind:key="post.id" v-for="post in posts">
       <Entry
-        v-bind:entry="entry"
-        v-on:del-entry="$emit('del-entry', entry)"
-        @downvote-entry="$emit('downvote-entry', entry)"
-        @upvote-entry="$emit('upvote-entry', entry)"
+        v-bind:entry="post"
+        v-on:del-entry="'del-entry', post"
+        @downvote-entry="'downvote-entry', post"
+        @upvote-entry="'upvote-entry', post"
       />
     </div>
-    <div><p></p></div>
     <form @submit.prevent="addEntry($event, newEntryTitle)">
       <input type="text" v-model="newEntryTitle" />
       <input type="submit" value="Add" />
@@ -18,27 +17,48 @@
 </template>
 
 <script>
-import Entry from '../Entry/Entry'
+import Entry from "../Entry/Entry";
+import gql_posts from "../../apollo/queries/posts";
+import gql_upvote from "../../apollo/queries/upvote";
 
 export default {
-  name: 'Entries',
+  name: "Entries",
   components: {
-    Entry
+    Entry,
   },
-  data () {
+  data() {
     return {
-      title: 'Hackernews',
-      newEntryTitle: ''
-    }
+      title: "Hackernews",
+      newEntryTitle: "",
+    };
   },
   methods: {
-    addEntry (event, title) {
-      this.newEntryTitle = ''
-      this.$emit('add-entry', title)
-    }
+    addEntry(event, title) {
+      this.newEntryTitle = "";
+      this.$emit("add-entry", title);
+    },
+    deleteEntry(entryToDelete) {
+      console.log(entryToDelete);
+      this.posts = this.posts.filter(
+        (entry) => entry.index !== entryToDelete.index
+      );
+    },
+    addEntry(newEntry) {
+      const maxIdb = Math.max(...this.posts.map((entry) => entry.index)) + 1;
+      this.posts.push({ index: maxIdb, votes: 0, title: newEntry });
+    },
+
   },
-  props: ['entries']
-}
+  // props: ['entries'],
+  apollo: {
+    posts: {
+      query: gql_posts,
+      // prefetch: ({ route }) => ({ id: route.params.id }),
+      // variables() {
+      // return { id: this.$route.params.id };
+    },
+  },
+};
 </script>
 
 <style scoped>

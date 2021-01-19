@@ -1,0 +1,6 @@
+mutation upvote($id: ID!) {
+  upvote(id: $id) {
+    id
+    title
+  }
+}

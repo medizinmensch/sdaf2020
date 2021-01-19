@@ -1,6 +1,9 @@
 <template>
   <div>
+    <nuxt-link to="/">Home</nuxt-link>
     <nuxt-link to="/login">Login</nuxt-link>
+    <nuxt-link to="/sign-up">Sign-Up</nuxt-link>
+    <p v-if="email">Logged in as <b>{{ email }}</b></p>
     <!-- <login /> -->
     <Nuxt />
   </div>
@@ -8,9 +11,15 @@
 
 <script>
 // import login from "../p/login";
+import { mapMutations } from "vuex";
 
 export default {
   name: "layout",
+  computed: {
+    email() {
+      return this.$store.state.user.email
+    }
+  },
   // components: { login }
 };
 </script>

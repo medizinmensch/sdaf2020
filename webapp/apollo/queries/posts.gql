@@ -1,6 +1,7 @@
-{ 
-    posts {
-        title
-        id
-    }
+query posts {
+  posts {
+    id
+    title
+    votes
+  }
 }

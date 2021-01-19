@@ -1,9 +1,12 @@
 export const state = () => ({
-    counter: 0
+    user: {
+        token: "",
+        email: "",
+    }
 })
 
 export const mutations = {
-    increment(state) {
-        state.counter++
+    setUser(state, user) {
+        state.user = user
     }
 }

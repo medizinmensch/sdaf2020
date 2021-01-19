@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Entries
-      :posts="posts"
+      
       @add-entry="addEntry($event)"
       @del-entry="deleteEntry"
       @downvote-entry="downvoteEntry"
@@ -11,43 +11,29 @@
 </template>
 
 <script>
-import Entries from '../components/Entries/Entries'
-import gql from 'graphql-tag'
-// import posts from '../apollo/queries/posts'
+import Entries from "../components/Entries/Entries";
+import gql from "graphql-tag";
 
 export default {
-  name: 'App',
+  name: "App",
   components: { Entries },
   methods: {
-    deleteEntry (entryToDelete) {
-      console.log(entryToDelete)
-      this.posts = this.posts.filter((entry) => entry.index !== entryToDelete.index)
+    async getPosts(event, email, password) {
+      console.log("this.posts", this.posts);
+      console.log("token", this.$store.state.user.token);
+      try {
+        const result = await this.$apollo.query({ query: gql_posts });
+        console.log(result);
+        // this.posts = result.data.posts;
+        console.log(result.data.posts);
+        return result.data.posts;
+      } catch (err) {
+        console.log(err);
+      }
     },
-    addEntry (newEntry) {
-      const maxIdb = Math.max(...this.posts.map(entry => entry.index)) + 1
-      this.posts.push({ index: maxIdb, votes: 0, title: newEntry })
-    },
-    upvoteEntry (entry) {
-      console.log(entry)
-      this.posts.find(element => element.index === entry.index).votes++
-    },
-    downvoteEntry (entry) {
-      console.log(entry)
-      this.posts.find(element => element.index === entry.index).votes--
-    }
-    // sort () {
-    //   this.posts.sort((a, b) => a.votes > b.votes ? -1 : 1)
-    // }
   },
-  data () {
-    return {
-      posts: []
-    }
-  },
-  apollo: {
-    posts: gql`{ posts { title, id } }`
-  }
-}
+  
+};
 </script>
 
 <style>
