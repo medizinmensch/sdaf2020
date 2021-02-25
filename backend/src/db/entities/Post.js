@@ -8,7 +8,6 @@ module.exports = class Post {
 	}
 
 	async save() {
-		console.log("this (post)", this);
 		if (!(this.author && this.author.node)) {
 			console.log("Author node is missing");
 			return 'Cannot save Post. Author node is missing!';

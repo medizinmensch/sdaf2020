@@ -33,6 +33,7 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/apollo',
+    '@nuxtjs/vuetify',
   ],
 
   apollo: {

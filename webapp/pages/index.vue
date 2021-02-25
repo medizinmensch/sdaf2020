@@ -1,38 +1,36 @@
 <template>
   <div id="app">
-    <Entries
-      
-      @add-entry="addEntry($event)"
-      @del-entry="deleteEntry"
-      @downvote-entry="downvoteEntry"
-      @upvote-entry="upvoteEntry"
-    />
+    <Entries />
   </div>
 </template>
 
 <script>
 import Entries from "../components/Entries/Entries";
+import gql_profile from "../apollo/queries/profile";
 import gql from "graphql-tag";
 
 export default {
   name: "App",
   components: { Entries },
   methods: {
-    async getPosts(event, email, password) {
-      console.log("this.posts", this.posts);
-      console.log("token", this.$store.state.user.token);
+    async fetchProfile() {
       try {
-        const result = await this.$apollo.query({ query: gql_posts });
-        console.log(result);
-        // this.posts = result.data.posts;
-        console.log(result.data.posts);
-        return result.data.posts;
-      } catch (err) {
-        console.log(err);
+        const resp = await this.$apollo.query({
+          query: gql_profile,
+        });
+        this.$store.commit("setUser", {
+          email: resp.data.profile.email,
+          name: resp.data.profile.name,
+        });
+      }
+      catch{
+        console.log("Token apparently not set");
       }
     },
   },
-  
+  mounted() {
+    this.fetchProfile();
+  },
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="signup">
     <h1>Please sign up</h1>
     <form @submit.prevent="signup($event, name, email, password)">
       <input type="text" v-model="name" />
@@ -56,6 +56,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 60px; 
 }
 </style>

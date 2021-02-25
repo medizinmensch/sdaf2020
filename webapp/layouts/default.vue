@@ -1,26 +1,26 @@
 <template>
   <div>
-    <nuxt-link to="/">Home</nuxt-link>
-    <nuxt-link to="/login">Login</nuxt-link>
-    <nuxt-link to="/sign-up">Sign-Up</nuxt-link>
-    <p v-if="email">Logged in as <b>{{ email }}</b></p>
-    <!-- <login /> -->
+    <nav>
+      <nuxt-link class="nuxt-link" to="/">Home</nuxt-link>
+      <nuxt-link class="nuxt-link" to="/login">Login</nuxt-link>
+      <nuxt-link class="nuxt-link" to="/sign-up">Sign-Up</nuxt-link>
+    </nav>
+    <p v-if="email">
+      Logged in as <b>{{ email }}</b>
+    </p>
     <Nuxt />
   </div>
 </template>
 
 <script>
-// import login from "../p/login";
-import { mapMutations } from "vuex";
-
 export default {
   name: "layout",
   computed: {
     email() {
-      return this.$store.state.user.email
-    }
+      console.log("store.state", this.$store.state);
+      return this.$store.state.user.email;
+    },
   },
-  // components: { login }
 };
 </script>
 
@@ -72,5 +72,17 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  border: 1px solid black;
+}
+
+.nuxt-link {
+  font-family: "Source Sans Pro";
+  border: 1 px solid grey;
+  margin: 1rem;
 }
 </style>

@@ -16,9 +16,7 @@ module.exports = class User {
 	}
 
 	static async first(props) {
-		console.log("props", props);
 		const node = await neode.first('User', props)
-		console.log("node", node);
 		if (!node) return null
 		return new User({ ...node.properties(), node })
 	}

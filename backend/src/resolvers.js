@@ -59,16 +59,18 @@ module.exports = ({ subschema }) => ({
 	Mutation:
 	{
 		write: (_parent, args, { user }) => {
+			console.log("args.post.title" , args.post.title);
+			console.log("user" , user);
+
 			const post = new Post(
 				{
 					title: args.post.title,
 					author: user
 				})
-			post.save()
-			return post
+			return post.save()
 		},
 		upvote: async (_parent, args, context, info) => {
-			const user = await User.first({id: context.user.id});
+			const user = await User.first({ id: context.user.id });
 			if (!user && !user.checkPassword(password)) return new Error("User does not exist")
 
 			let post = await Post.first({ id: args.id });

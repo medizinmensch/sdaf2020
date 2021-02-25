@@ -1,15 +1,16 @@
 <template>
   <div class="entry">
     <p>{{ entry.votes }} - {{ entry.title }}</p>
-    <!-- <p>{{ entry.title }}</p> -->
 
-    <button class="upvotebtn" @click="'upvote-entry', entry">🔼</button>
-    <button @click="'downvote-entry', entry">🔽</button>
+    <button @click="upvoteEntry">🔼</button>
+    <button @click="downvoteEntry">🔽</button>
     <button @click="'del-entry', entry">🗑</button>
   </div>
 </template>
 
 <script>
+import gql_upvote from "../../apollo/queries/upvote";
+
 export default {
   name: "Entry",
   props: {
@@ -20,13 +21,16 @@ export default {
     },
   },
   methods: {
-    upvoteEntry(entry) {
-      console.log(entry);
-      this.posts.find((element) => element.index === entry.index).votes++;
+    async upvoteEntry() {
+      console.log("Hitting upvoteEntry");
+      console.log("entryToUpvote", this.entry);
+      const resp = await this.$apollo.mutate({
+        mutation: gql_upvote,
+        variables: { id: this.entry.id },
+      });
     },
-    downvoteEntry(entry) {
-      console.log(entry);
-      this.posts.find((element) => element.index === entry.index).votes--;
+    async downvoteEntry() {
+      console.log("Downvote not yet implemented");
     },
   },
 };
