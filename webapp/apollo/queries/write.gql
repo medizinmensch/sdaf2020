@@ -1,0 +1,7 @@
+mutation write($title: String!){
+  write(post: {title: $title }) {
+    title
+    id
+    votes
+  }
+}
